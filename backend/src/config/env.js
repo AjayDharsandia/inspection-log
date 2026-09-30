@@ -1,10 +1,7 @@
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';
 dotenv.config({
-  path: [
-    fileURLToPath(new URL('../../.env', import.meta.url)),
-    fileURLToPath(new URL('../../../.env', import.meta.url)),
-  ],
+  path: fileURLToPath(new URL('../../.env', import.meta.url)),
   quiet: true,
 });
 function port(value, name) {
@@ -26,9 +23,7 @@ export function databaseConfig(env = process.env) {
     'DB_NAME',
   ]) {
     if (typeof env[key] !== 'string' || !env[key].trim())
-      throw new Error(
-        key + ' is required. Configure backend/.env or root .env.',
-      );
+      throw new Error(key + ' is required. Configure backend/.env.');
   }
   // Pass separate fields to pg: passwords never undergo URL interpolation.
   return {

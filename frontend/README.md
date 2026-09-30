@@ -1,35 +1,46 @@
 # Frontend
 
-React 19, Vite, Tailwind CSS, Lucide icons and native Fetch. Requires Node.js 24 LTS (22.12+ supported).
+React 19, Vite, Tailwind CSS, Lucide icons and native Fetch on Node.js 24 LTS.
 
-Run from this directory:
+## Configuration
 
-```sh
-npm ci
-npm run dev
-npm run lint
-npm run build
-npm run preview
-```
+Copy [.env.example](.env.example) to `frontend/.env`.
 
-## API configuration
+| Variable          | Description  | Value                       |
+| ----------------- | ------------ | --------------------------- |
+| VITE_API_BASE_URL | API base URL | `http://localhost:3001/api` |
 
-Start the API using the [backend instructions](../backend/README.md). Open http://localhost:5173. Copy [.env.example](.env.example) to `frontend/.env` and set `VITE_API_BASE_URL` (default `http://localhost:3001/api`). The backend `CORS_ORIGIN` must match the frontend origin. If `VITE_API_BASE_URL` is unset, requests go to `/api` and the Vite development proxy forwards them to http://localhost:3001. Restart Vite after changes. Vite reads environment files from the `frontend/` directory. Never put secrets in VITE variables because they are included in the browser build.
+Restart Vite after changing `.env`. VITE variables are included in the browser build, so never put secrets in them. The backend `CORS_ORIGIN` must match the frontend origin (`http://localhost:5173`).
 
-For production builds, configure an explicit API URL or a same-origin `/api` reverse proxy. Preview serves build output only. For another frontend origin, configure `CORS_ORIGIN` in the backend.
+## Commands
 
-## Features and verification
+Run from `frontend/`:
 
-The overview shows global totals, severity/status counts and six recent inspections. The register combines severity, status and inclusive date filters with ascending/descending date sorting. Selecting a row fetches full details. Create requires date, machine ID, defect type and severity; remarks are optional. Resolving requires a non-whitespace note. Mutations refresh summary and list data.
+| Command         | Description                       |
+| --------------- | --------------------------------- |
+| npm run dev     | Start the dev server on port 5173 |
+| npm run lint    | ESLint                            |
+| npm run build   | Production build to `dist/`       |
+| npm run preview | Serve the production build        |
 
-The UI includes loading, empty, success and recoverable error states, cancellation of superseded fetches, native modal focus trapping, visible keyboard focus, 44px touch targets and 390px layouts. Long machine IDs and notes wrap.
+See the [backend README](../backend/README.md) for starting the API and the API contract.
 
-Verify with lint and build, then create, filter, inspect and resolve a finding. Check whitespace notes, empty results, API downtime and mobile overflow. See the [API contract](../backend/README.md).
+## Features
 
-## Pagination and verification
+- **Overview:** global totals, severity/status breakdown and the six most recent inspections.
+- **Inspection register:** severity, status and inclusive date-range filters with newest/oldest date ordering.
+- **Details:** selecting a row loads the full inspection. Open inspections can be resolved with a required note.
+- **Create:** date, machine ID, defect type and severity are required; remarks are optional.
+- After creating or resolving, the summary and list refresh.
 
-The register sends page=1, limit=20 and order, then an IntersectionObserver requests subsequent pages near the bottom. API results use data.items and data.pagination (page, limit, returned, hasMore). The loader locks each in-flight request, advances only on success, deduplicates rows by UUID, cancels obsolete requests and resets on filters/sort/view/refresh. More-page errors preserve loaded rows with a retry control. Loading and end-of-list messages are explicit. A Load more button also supports keyboard access.
+The UI has loading, empty, success and error states, keyboard focus handling in dialogs, 44px touch targets and layouts down to 390px wide. Inspection UUIDs are used for lookups and are not displayed.
 
-IDs are UUID strings throughout API calls, keys and dialogs. UUIDs are not displayed in the list or detail dialog; they are used only internally for lookups and resolution.
+## Infinite scrolling
 
-No frontend runtime dependencies were added for pagination.
+The register requests `page=1&limit=20` with the selected filters and order. An `IntersectionObserver` on a marker below the list requests the next page when it comes within 250px of the viewport. New rows are appended and de-duplicated by ID.
+
+- Only one page request runs at a time, and a page is requested once.
+- Loading stops when the API returns `hasMore: false`.
+- Changing filters, order or view cancels pending requests and restarts from page 1.
+- A "Loading more inspections…" message shows while a page loads. A failed page keeps loaded rows and shows a retry button.
+- A "Load more inspections" button provides keyboard access.
