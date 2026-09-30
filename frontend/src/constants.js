@@ -23,3 +23,11 @@ export const dateLabel = (value) =>
     month: 'short',
     year: 'numeric',
   });
+// Native date inputs only open the calendar from the icon; open it on any click.
+export const openDatePicker = (event) => {
+  try {
+    event.currentTarget.showPicker?.();
+  } catch {
+    // Unsupported or blocked: the field still accepts typing and the icon.
+  }
+};

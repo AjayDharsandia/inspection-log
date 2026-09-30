@@ -36,12 +36,19 @@ export function inspectionService(db) {
       const order = sortDirections[filters.order];
       if (!sort || !order)
         throw new ApiError(400, 'VALIDATION_ERROR', 'Invalid sort values.');
-      const rows = (
-        await db.query(
-          `SELECT ${columns} FROM inspections ${conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''} ORDER BY ${sort} ${order}, inspections.id ${order} LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+      const where = conditions.length
+        ? `WHERE ${conditions.join(' AND ')}`
+        : '';
+      const [{ rows }, count] = await Promise.all([
+        db.query(
+          `SELECT ${columns} FROM inspections ${where} ORDER BY ${sort} ${order}, inspections.id ${order} LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
           [...values, filters.limit + 1, (filters.page - 1) * filters.limit],
-        )
-      ).rows;
+        ),
+        db.query(
+          `SELECT count(*)::int AS total FROM inspections ${where}`,
+          values,
+        ),
+      ]);
       const items = rows.slice(0, filters.limit);
       return {
         items,
@@ -49,6 +56,7 @@ export function inspectionService(db) {
           page: filters.page,
           limit: filters.limit,
           returned: items.length,
+          total: count.rows[0].total,
           hasMore: rows.length > filters.limit,
         },
       };

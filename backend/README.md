@@ -74,7 +74,13 @@ Example: `GET /api/inspections?page=1&limit=20&order=desc`
 {
   "data": {
     "items": [],
-    "pagination": { "page": 1, "limit": 20, "returned": 0, "hasMore": false }
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "returned": 0,
+      "total": 0,
+      "hasMore": false
+    }
   },
   "error": null
 }
@@ -91,7 +97,7 @@ Example: `GET /api/inspections?page=1&limit=20&order=desc`
 | startDate | `YYYY-MM-DD`, inclusive       | —                |
 | endDate   | `YYYY-MM-DD`, inclusive       | —                |
 
-Results are ordered by the sort column, then by `id`.
+Results are ordered by the sort column, then by `id`. `pagination.total` is the count of all records matching the filters; `hasMore` is true when another page exists.
 
 Summary response: `{ total, open, resolved, bySeverity: [{ severity, open, resolved }] }`.
 

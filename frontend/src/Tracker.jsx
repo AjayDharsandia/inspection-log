@@ -13,7 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { api } from './api/client';
-import { defaults, severities, dateLabel } from './constants';
+import { defaults, severities, dateLabel, openDatePicker } from './constants';
 import { Badge, Field, ErrorBox } from './components/ui';
 import InspectionDialog from './components/InspectionDialog';
 import './App.css';
@@ -40,6 +40,7 @@ export default function App() {
     error: feedError,
     pageError,
     hasMore,
+    total,
     sentinel,
     retryPage,
   } = useInspectionFeed(filters, view, revision, invalidRange);
@@ -121,12 +122,6 @@ export default function App() {
             )}
           </button>
         </nav>
-        <div className="sidebar-bottom">
-          <ShieldCheck size={22} />
-          <p>
-            Quality in every thread.<small>Spot it. Log it. Resolve it.</small>
-          </p>
-        </div>
       </aside>
       <div className="main-shell">
         <header className="topbar">
@@ -296,7 +291,11 @@ export default function App() {
                     ? 'Recent inspections'
                     : 'All inspections'}
                   <span className="count">
-                    {loading || feedError ? '—' : rows.length}
+                    {loading || feedError
+                      ? '—'
+                      : view === 'overview'
+                        ? rows.length
+                        : total}
                   </span>
                 </h2>
                 <p className="muted">
@@ -364,6 +363,7 @@ export default function App() {
                   <Field label="From date">
                     <input
                       type="date"
+                      onClick={openDatePicker}
                       name="startDate"
                       value={filters.startDate}
                       onChange={changeFilter}
@@ -372,6 +372,7 @@ export default function App() {
                   <Field label="To date">
                     <input
                       type="date"
+                      onClick={openDatePicker}
                       name="endDate"
                       min={filters.startDate || undefined}
                       value={filters.endDate}
@@ -509,10 +510,6 @@ export default function App() {
               </span>
             </div>
           </section>
-          <footer className="page-footer">
-            THREADLINE <span>·</span> Quality inspection tracker
-            <span>Global summary is independent of filters.</span>
-          </footer>
         </main>
       </div>
       {modal && (

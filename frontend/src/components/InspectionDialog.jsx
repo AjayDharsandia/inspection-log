@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, X } from 'lucide-react';
 import { api } from '../api/client';
-import { severities, defects, today, dateLabel } from '../constants';
+import {
+  severities,
+  defects,
+  today,
+  dateLabel,
+  openDatePicker,
+} from '../constants';
 import { Badge, Field, ErrorBox } from './ui';
 export default function InspectionDialog({ inspection, close, saved }) {
   const dialog = useRef(null);
@@ -84,6 +90,7 @@ export default function InspectionDialog({ inspection, close, saved }) {
                 <input
                   required
                   type="date"
+                  onClick={openDatePicker}
                   name="inspectionDate"
                   value={form.inspectionDate}
                   onChange={update}

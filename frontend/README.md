@@ -40,6 +40,7 @@ The UI has loading, empty, success and error states, keyboard focus handling in 
 The register requests `page=1&limit=20` with the selected filters and order. An `IntersectionObserver` on a marker below the list requests the next page when it comes within 250px of the viewport. New rows are appended and de-duplicated by ID.
 
 - Only one page request runs at a time, and a page is requested once.
+- The "All inspections" heading shows `pagination.total`, the count of all records matching the current filters, from the first page onwards.
 - Loading stops when the API returns `hasMore: false`.
 - Changing filters, order or view cancels pending requests and restarts from page 1.
 - A "Loading more inspections…" message shows while a page loads. A failed page keeps loaded rows and shows a retry button.

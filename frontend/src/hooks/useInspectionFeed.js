@@ -12,6 +12,7 @@ export function useInspectionFeed(filters, view, revision, invalidRange) {
     error: '',
     pageError: '',
     hasMore: false,
+    total: 0,
   });
   const sentinel = useRef(null);
   const retry = useRef(() => {});
@@ -39,6 +40,7 @@ export function useInspectionFeed(filters, view, revision, invalidRange) {
             ...previous,
             rows: [...unique.values()],
             hasMore: result.pagination.hasMore,
+            total: result.pagination.total,
           };
         });
       },
@@ -65,6 +67,7 @@ export function useInspectionFeed(filters, view, revision, invalidRange) {
         error: '',
         pageError: '',
         hasMore: false,
+        total: 0,
       });
       if (invalidRange && view === 'inspections') {
         update({ loading: false });

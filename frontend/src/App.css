@@ -105,21 +105,6 @@ nav button.active {
   border-radius: 5px;
   font-size: 11px;
 }
-.sidebar-bottom {
-  margin-top: auto;
-  border-top: 1px solid #edf0ed;
-  padding: 24px 8px 0;
-  display: flex;
-  gap: 10px;
-  color: #74857a;
-  font-size: 11px;
-}
-.sidebar-bottom small {
-  display: block;
-  font-size: 10px;
-  margin-top: 7px;
-  color: #9aa59e;
-}
 .main-shell {
   margin-left: 236px;
   width: calc(100% - 236px);
@@ -466,18 +451,6 @@ main {
   gap: 6px;
   align-items: center;
 }
-.page-footer {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #7c8e82;
-  font-size: 9px;
-  letter-spacing: 0.3px;
-}
-.page-footer > span:last-child {
-  margin-left: auto;
-  letter-spacing: 0;
-}
 .filters {
   padding: 0 23px 22px;
   border-bottom: 1px solid #e9eee8;
@@ -733,8 +706,7 @@ dialog::backdrop {
     width: 100%;
   }
   .workspace,
-  .nav-label,
-  .sidebar-bottom {
+  .nav-label {
     display: none;
   }
   nav {
@@ -960,14 +932,6 @@ dialog::backdrop {
   .filter-grid select {
     font-size: 11px;
     padding: 10px 7px;
-  }
-  .page-footer {
-    flex-wrap: wrap;
-    font-size: 8px;
-  }
-  .page-footer > span:last-child {
-    width: 100%;
-    margin: 4px 0 0;
   }
   .form-grid {
     grid-template-columns: 1fr;

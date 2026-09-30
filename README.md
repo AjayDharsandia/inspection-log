@@ -57,11 +57,10 @@ Env files are ignored by source control.
 
 Migrations live in [backend/src/db/migrations/](backend/src/db/migrations/). The runner applies pending files in filename order, each in its own transaction, and records them in `schema_migrations`.
 
-| Migration                                | Purpose                                                |
-| ---------------------------------------- | ------------------------------------------------------ |
-| 001_create_inspections.sql               | Inspections table, constraints and filter indexes      |
-| 002_add_inspections_stats_index.sql      | Index for the global severity/status summary           |
-| 003_inspection_uuid_and_sort_indexes.sql | UUID primary key (`legacy_id` column) and sort indexes |
+| Migration                           | Purpose                                                         |
+| ----------------------------------- | --------------------------------------------------------------- |
+| 001_create_inspections.sql          | Inspections table, constraints and filter indexes               |
+| 002_inspection_uuid_and_indexes.sql | UUID primary key (`legacy_id` column), summary and sort indexes |
 
 Indexes on `inspections`:
 
@@ -95,7 +94,7 @@ The seed SQL lives in [backend/src/db/seeds/](backend/src/db/seeds/) and is not 
 
 New inspections start Open. Resolving requires a note, and resolving twice returns 409. Summary counts are global and ignore list filters.
 
-The list API returns `data.items` and `data.pagination` (`page`, `limit`, `returned`, `hasMore`). The frontend loads 20 records at a time as you scroll, restarts from page 1 when filters or sorting change, and stops at the last page. The overview shows the six most recent inspections.
+The list API returns `data.items` and `data.pagination` (`page`, `limit`, `returned`, `total`, `hasMore`). `total` is the number of records matching the filters. The frontend loads 20 records at a time as you scroll, restarts from page 1 when filters or sorting change, and stops at the last page. The overview shows the six most recent inspections.
 
 ## Verification
 

@@ -16,6 +16,14 @@ ALTER TABLE inspections ALTER COLUMN id TYPE UUID USING gen_random_uuid();
 ALTER TABLE inspections ALTER COLUMN id SET DEFAULT gen_random_uuid();
 DROP SEQUENCE inspections_id_seq;
 
+-- Covers the global stats query:
+-- SELECT severity, status, count(*) FROM inspections GROUP BY severity, status;
+-- Both grouping columns are in one B-tree, allowing an index-only scan when
+-- PostgreSQL's visibility map and cost estimates make it beneficial. Exact
+-- global counts still require scanning all entries; small tables may use a
+-- sequential scan instead. No partial index: stats include every status.
+CREATE INDEX inspections_severity_status_idx ON inspections (severity, status);
+
 -- Matches both supported ORDER BY clauses, including their stable tie-breaker.
 -- A B-tree supports scans in both directions and inspection_date range bounds.
 CREATE INDEX inspections_date_id_idx ON inspections (inspection_date, id);
